@@ -1,4 +1,3 @@
-// console.log("inside utils");
 var d3 = require('d3');
 var d3Chart = {};
 
@@ -32,7 +31,6 @@ d3Chart._scales = function(el, domain) {
     return null;
   }
 
-  // console.log("DomainY",domain.y);
   var width = el.offsetWidth;
   var height = el.offsetHeight;
 
@@ -44,16 +42,13 @@ d3Chart._scales = function(el, domain) {
     .range([height, 0])
     .domain(domain.y);
 
-    // console.log("xscale", x, "yscale",y)
   return {x: x, y: y};
 };
 
 
 // d3Chart.js
 d3Chart._drawPoints = function(el, scales, data) {
-  // console.log("el",el,"scales",scales, "data",data)
   var g = d3.select(el).selectAll('.d3-bars');
-  // console.log("Data",data)
   var bar = g.selectAll('.d3-bar')
     .data(data, function(d) { return d.yvar; });
 
