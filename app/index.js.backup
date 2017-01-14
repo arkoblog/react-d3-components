@@ -22,66 +22,78 @@ var Puke = React.createClass({
 })
 
 var D3Chart = React.createClass({
+	  propTypes: {
+    url: React.PropTypes.string,
+    xvar: React.PropTypes.string,
+    yvar: React.PropTypes.string
+	},
+
+
 	getInitialState: function() {
 		return {
 			rawData:[],
-		    data: sampleData,
-    		domain: {x: [0, 30], y: [0, 10] }
+    		domain: {}
 		}
 	},
-	componentWillMount: function () {
-		this.loadRawData()
-	},
+
 	domainCalculator: function(data, xvar, yvar){
     // console.log("Inside domain calculator",data)
-    	var domain = {}
-    	if(typeof(data[1].xvar)=='string'){
+    var domain = {}
+    if(typeof(data[1][xvar])=='string'){
       // console.log()
       // console.log('string')
-      		domain.x = _.keys(_.groupBy(data, function(d){return d.xvar;}))
-    	} else  {
-      		var numbers = _.keys(_.groupBy(data, function(d){return d.xvar;})).map(Number)
-      		domain.x = [0, d3.max(numbers)]
-    	};
+      domain.x = _.keys(_.groupBy(data, function(d){return d[xvar];}))
+    } else  {
+      var numbers = _.keys(_.groupBy(data, function(d){return d[xvar];})).map(Number)
+      domain.x = [d3.max(numbers), d3.min(numbers)]
+    } 
 
-    	if(typeof(data[1].yvar)=='string'){
+    if(typeof(data[1][yvar])=='string'){
       // console.log()
       // console.log('string')
-     		 domain.y = _.keys(_.groupBy(data, function(d){return d.yvar;}))
-    	} else  {
-      		var numbers = _.keys(_.groupBy(data, function(d){return d.yvar;})).map(Number)
-      		domain.y = [0, d3.max(numbers)]
-    	}; 
+      domain.y = _.keys(_.groupBy(data, function(d){return d[yvar];}))
+    } else  {
+      var numbers = _.keys(_.groupBy(data, function(d){return d[yvar];})).map(Number)
+      domain.y = [d3.max(numbers), d3.min(numbers)]
+    } 
     // var numbers = _.keys(_.groupBy(data, function(d){return d[yvar];})).map(Number);
-    
+    // console.log()
     return  domain
-  	},
-	loadRawData: function() {
-		d3.csv(this.props.url)
-			.row( function(d){
+  },
+
+  loadRawData: function() {
+        d3.csv(this.props.url)
+          .row(function(d){
             if (!d[this.props.xvar]) {
               return null;
-            }       			
-			return {
-				xvar: d[this.props.xvar],
-              	yvar: Number(d[this.props.yvar])
-				}
-			}.bind(this))
-			.get(function(error,rows){
-				if(error){
-					console.error("Error",error);
-				} else {
-					// console.log("Rows",rows);
-					var newDomain = this.domainCalculator(rows, this.props.xvar, this.props.yvar)
-					// console.log("Hi",rows)
-              		this.setState({
-                		rawData:rows, 
-                		domain: newDomain
-              		});
-				}
-			}.bind(this))
-			// console.log("Mounted")
-	}, 
+            }       
+          return {
+              xvar: d[this.props.xvar],
+              yvar: Number(d[this.props.yvar])  
+            }
+          }.bind(this))
+          .get(function(error,rows){
+            if(error){
+              console.error("Error",error);
+            } else {
+              var newDomain = this.domainCalculator(rows, this.props.xvar, this.props.yvar)
+              // console.log("Hi",rows)
+              this.setState({
+                rawData:rows, 
+                domain: newDomain
+              });
+
+          
+                    // console.log("RawDate",this.state.rawData,"rows",rows)
+        }
+      }.bind(this))
+      // console.log("Mounted")
+  },
+
+	componentWillMount: function () {
+		this.loadRawData()
+		console.log("Mystate: ", this.state);
+	},
 	componentDidMount: function () {
 		// console.log("Data",this.state.rawData)
 	},
@@ -94,12 +106,6 @@ var D3Chart = React.createClass({
 					<p>In this app, we try to demonstrate the use of d3 based charts in React. We will be creating several components, and placing them in here.</p>		
 					<div className="col-md-12">
 						 <Chart data={this.state.rawData} domain={this.state.domain} />
-						{/*<svg>
-							<D3Bar data={this.state.rawData}>
-							</D3Bar> 
-
-						</svg>*/}
-						<Puke data={this.state.rawData}/>
 					</div>
 				</div>
 			);
@@ -107,6 +113,6 @@ var D3Chart = React.createClass({
 }) 
 
 ReactDOM.render(
-	<D3Chart url="data/dummy.csv" xvar="var" yvar="value3" />,
+	<D3Chart url="data/dummy.csv" xvar="var" yvar="value" />,
 	document.querySelectorAll('.h1bgraph')[0]
 )

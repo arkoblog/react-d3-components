@@ -9,6 +9,7 @@ var Chart = React.createClass({
   },
 
   componentDidMount: function() {
+    // console.log("Mydata:",this.props.data)
     var el = ReactDOM.findDOMNode(this);
     d3Chart.create(el, {
       width: '100%',
