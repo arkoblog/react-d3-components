@@ -15,8 +15,7 @@ var D3Chart = React.createClass({
 	getInitialState: function() {
 		return {
 			rawData:[],
-		    data: sampleData,
-    		domain: {x: [0, 30], y: [0, 10] }
+	   		domain: {x: [0, 30], y: [0, 10] }
 		}
 	},
 	componentWillMount: function () {
@@ -82,6 +81,6 @@ var D3Chart = React.createClass({
 }) 
 
 ReactDOM.render(
-	<D3Chart url="data/dummy.csv" xvar="var" yvar="value3" />,
+	<D3Chart url="data/dummy.csv" xvar="var" yvar="value2" />,
 	document.querySelectorAll('.h1bgraph')[0]
 )
